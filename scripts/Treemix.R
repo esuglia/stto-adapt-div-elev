@@ -5,16 +5,16 @@ library(phytools)
 library(ggtree)
 library(tidyverse)
 library(viridis)
-setwd("elena_data")
+#setwd("elena_data")
 
 # Read tree file (Newick format)
 tree <- read.tree("data/treemix.tre")
 
 # Read metadata file
 # Assumes columns: population, elevation, (other variables...)
-metadata <- read_tsv("merged_traits.csv") |>
+metadata <- read_tsv("data/merged_traits.csv") |>
 dplyr::select(population = `pop.x`, elevation = el) |>
-distinct()
+dplyr::distinct()
 
 # Add outlier manually
 outlier_pop <- "S.div"  # Replace with actual name
@@ -55,14 +55,15 @@ p <- p +
               color="black",
               size=4, 
               hjust=-0.1) +
-  scale_color_viridis(name="Elevation (m)", 
-                     option="viridis",
-                     na.value="black", guide = guide_colorbar(
-                            direction = "horizontal",
-                            barwidth = 30,  # Makes the bar longer
-                            barheight = 1,  # Makes the bar thinner
-                            title.position = "top",
-                            title.hjust = 0.5)) +
+  # changing color scheme to match other plots
+  scale_color_continuous(name="Elevation (m)",
+                        low = "orange", high = "blue",
+                        na.value="black", guide = guide_colorbar(
+                        direction = "horizontal",
+                        barwidth = 30,  # Makes the bar longer
+                        barheight = 1,  # Makes the bar thinner
+                        title.position = "top",
+                        title.hjust = 0.5)) +
   xlim(0, max(node.depth.edgelength(tree)) * 1.25) +
   labs(x="Drift parameter") +
   theme(axis.text.x = element_text(size=10),
@@ -72,3 +73,5 @@ p <- p +
         legend.text = element_text(size=9))
 
 print(p)
+
+ggsave("figures/Fig2a_treemix_phylogeny_4.12.26.png", height = 6, width = 8, dpi = 600)
