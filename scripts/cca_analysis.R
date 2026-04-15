@@ -4,7 +4,7 @@ library(ggrepel)
 
 # Load data ----
 morph = read_csv("data/qpc_morph_9.6.24.csv")
-climate_summary = read_csv("data/climate_summary.csv")
+climate_summary = read_csv("data/climate_summary_9.14.25.csv")
 
 # morphological traits removed: number of branches (correlated w/no lvs)
 # climate metrics removed: tmin (correlated with tmx), pck (correlated w/ppt)
@@ -19,7 +19,7 @@ morph_climate = morph %>%
 
 morph_climate_for_cca = morph_climate |>
   # remove non-numerical data for dataframe used as input to cca
-  dplyr::select(-c(PC1.x, PC1.y, PC2.x, PC2.y, ID, pop, site))
+  dplyr::select(-c(PC1, PC2, ...1, ID, pop, site))
 
 morph_for_cca = morph_climate_for_cca |>
   dplyr::select(lf_thickness:sla) |>
@@ -66,5 +66,6 @@ theme_classic()+
 labs(x = "Canonical Variate 1", y = "Canonical Variate 2", title = "Canonical Correlation Analysis")
 
 # save plot
-#ggsave("figures/cca_biplot_mixomics.pdf", width = 8, height = 8)
-#ggsave("figures/cca_biplot_mixomics.png", width = 8, height = 8)
+# updated plot on 4/15 simply changes the climate var input so that the precip vals are calculated slightly differently, but because the relative values are the same the new plot is identical to the old plot
+ggsave("figures/cca_biplot_mixomics_4.15.26.pdf", width = 8, height = 8)
+ggsave("figures/cca_biplot_mixomics_4.15.26.png", width = 8, height = 8)
