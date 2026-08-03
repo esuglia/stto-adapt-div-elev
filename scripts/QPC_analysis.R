@@ -199,7 +199,7 @@ library(viridis)
 library(cowplot)
 
 ## Paths ----
-out_dir  <- "outputs"
+out_dir  <- "data"
 figs_dir <- "figs"
 dir.create(figs_dir, showWarnings = FALSE)
 
