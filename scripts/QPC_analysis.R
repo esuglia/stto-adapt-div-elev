@@ -204,14 +204,22 @@ figs_dir <- "figs"
 dir.create(figs_dir, showWarnings = FALSE)
 
 ## Load pre-computed results ----
+# myEig         <- readRDS(file.path(out_dir, "myEig_allpops.rds"))
+# myEig_sla     <- readRDS(file.path(out_dir, "myEig_sla.rds"))
+# qpc_results   <- readRDS(file.path(out_dir, "qpc_results.rds"))
+# qpc_ci        <- readRDS(file.path(out_dir, "qpc_ci.rds"))
+# traits_merged <- read_tsv(file.path(out_dir, "traits_merged.tsv"), show_col_types = FALSE)
+# sla_traits    <- read_tsv(file.path(out_dir, "sla_traits.tsv"), show_col_types = FALSE)
+# pval_long     <- read_tsv(file.path(out_dir, "qpc_summary.tsv"), show_col_types = FALSE)
 
-myEig         <- readRDS(file.path(out_dir, "myEig_allpops.rds"))
-myEig_sla     <- readRDS(file.path(out_dir, "myEig_sla.rds"))
-qpc_results   <- readRDS(file.path(out_dir, "qpc_results.rds"))
-qpc_ci        <- readRDS(file.path(out_dir, "qpc_ci.rds"))
-traits_merged <- read_tsv(file.path(out_dir, "traits_merged.tsv"), show_col_types = FALSE)
-sla_traits    <- read_tsv(file.path(out_dir, "sla_traits.tsv"), show_col_types = FALSE)
-pval_long     <- read_tsv(file.path(out_dir, "qpc_summary.tsv"), show_col_types = FALSE)
+# Directories for Elena to recreate and clean up plots 7/30/26
+myEig         <- readRDS("data/myEig_allpops.rds")
+myEig_sla     <- readRDS("data/myEig_sla.rds")
+qpc_results   <- readRDS("data/qpc_results.rds")
+qpc_ci        <- readRDS("data/qpc_ci.rds")
+traits_merged <- read_tsv(file.path("data/traits_merged.tsv"), show_col_types = FALSE)
+sla_traits    <- read_tsv(file.path("data/sla_traits.tsv"), show_col_types = FALSE)
+pval_long     <- read_tsv(file.path("data/qpc_summary.tsv"), show_col_types = FALSE)
 
 ## Population color palette (alphabetical) ----
 pop_colors <- c(
@@ -301,6 +309,24 @@ plot_qpc_manhattan <- function(qpc_results_list, fdr_threshold = 0.05) {
       x = "Principal Component",
       y = expression(-log[10](italic(P))),
       color = "Trait"
+    ) +
+    scale_color_manual(
+      values = c(
+        "lf_thickness" = "#E69F00",  # Light Orange
+        "height"       = "#56B4E9",  # Sky Blue
+        "stem_diam"    = "#009E73",  # Bluish Green
+        "no_lvs"       = "#F0E442",  # Yellow
+        "lngst_lf"     = "#0072B2",  # Dark Blue
+        "sla"          = "#D55E00"   # Vermillion/Red-Orange
+      ),
+      labels = c(
+        "lf_thickness" = "Leaf Thickness",
+        "height"       = "Height",
+        "stem_diam"    = "Stem Diameter",
+        "no_lvs"       = "No. of Leaves",
+        "lngst_lf"     = "Longest Leaf",
+        "sla"          = "SLA"
+      )
     ) +
     theme_qpc() +
     theme(
@@ -526,6 +552,9 @@ plot_trait_pc_scatter <- function(trait_values, eigenvectors, eigenvalues,
 # traits_data : named list mapping trait names (matching qpc_results_list keys)
 #               to numeric vectors of trait values
 
+traits_data = 1:6
+names(traits_data) = names(qpc_results)
+
 plot_significant_associations <- function(qpc_results_list, traits_data,
                                           eigenvectors, eigenvalues,
                                           pop_assignments, ci_list = NULL,
@@ -571,11 +600,10 @@ plot_significant_associations <- function(qpc_results_list, traits_data,
   wrap_plots(plot_list, ncol = ncols)
 }
 
-
-
 # Manhattan plot — all traits
 p_manhattan <- plot_qpc_manhattan(qpc_results[names(traits_data)], fdr_threshold = 0.05)
-ggsave(file.path(figs_dir, "qpc_manhattan.pdf"), p_manhattan, width = 14, height = 8)
+#ggsave(file.path(figs_dir, "qpc_manhattan.pdf"), p_manhattan, width = 14, height = 8)
+ggsave("figures/Fig7a_qpc_manhattan_8.4.26.png")
 
 # Faceted barplot — all traits
 p_faceted <- plot_qpc_faceted(qpc_results[names(traits_data)], fdr_threshold = 0.05)
@@ -633,3 +661,63 @@ p_lngst <- plot_trait_pc_scatter(
   show_pop_labels = TRUE
 )
 ggsave(file.path(figs_dir, "qpc_lngst_lf_PC10.png"), p_lngst, dpi = 600, width = 10, height = 8)
+
+# New plots 8/4/26 ----
+# Longest leaf vs PC5
+fig7b = plot_trait_pc_scatter(
+  trait_values    = traits_merged$postvern_lngst_lf,
+  eigenvectors    = myEig$vectors,
+  eigenvalues     = myEig$values,
+  pc_number       = 5,
+  pop_assignments = traits_merged$Population,
+  trait_name      = "Longest leaf length",
+  ci_vector       = qpc_ci[["lngst_lf"]],
+  pop_colors      = pop_colors,
+  show_pop_labels = TRUE
+)
+#ggsave("figures/qpc_lngst_lf_PC5_8.3.26.png", dpi = 600, width = 10, height = 8)
+
+fig7c = plot_trait_pc_scatter(
+  trait_values    = traits_merged$postvern_lngst_lf,
+  eigenvectors    = myEig$vectors,
+  eigenvalues     = myEig$values,
+  pc_number       = 6,
+  pop_assignments = traits_merged$Population,
+  trait_name      = "Longest leaf length",
+  ci_vector       = qpc_ci[["lngst_lf"]],
+  pop_colors      = pop_colors,
+  show_pop_labels = TRUE
+)
+#ggsave("figures/qpc_lngst_lf_PC6_8.3.26.png", dpi = 600, width = 10, height = 8)
+
+fig7d = plot_trait_pc_scatter(
+  trait_values    = traits_merged$postvern_lngst_lf,
+  eigenvectors    = myEig$vectors,
+  eigenvalues     = myEig$values,
+  pc_number       = 8,
+  pop_assignments = traits_merged$Population,
+  trait_name      = "Longest leaf length",
+  ci_vector       = qpc_ci[["lngst_lf"]],
+  pop_colors      = pop_colors,
+  show_pop_labels = TRUE
+)
+#ggsave("figures/qpc_lngst_lf_PC8_8.3.26.png", dpi = 600, width = 10, height = 8)
+
+# Height vs PC9
+fig7e = plot_trait_pc_scatter(
+  trait_values    = traits_merged$postvern_height,
+  eigenvectors    = myEig$vectors,
+  eigenvalues     = myEig$values,
+  pc_number       = 9,
+  pop_assignments = traits_merged$Population,
+  trait_name      = "Height",
+  ci_vector       = qpc_ci[["height"]],
+  pop_colors      = pop_colors,
+  show_pop_labels = TRUE
+)
+#ggsave("figures/qpc_height_PC9_8.3.26.png", dpi = 600, width = 10, height = 8)
+
+#cowplot
+library(cowplot)
+plot_grid(fig7b, fig7c, fig7d, fig7e, labels = c("B", "C", "D", "E"))
+ggsave("figures/Fig7b-e_qpc_8.4.26.png")

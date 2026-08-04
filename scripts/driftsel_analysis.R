@@ -62,7 +62,8 @@ samp = MH(afm$theta, ped_sto,
     15000, 5000, 10, alt=T)
 
 saveRDS(samp, "data/samp_new_scaled_no_covar.RDS")
-samp = readRDS("data/samp_new_scaled_no_covar.RDS")
+# Elena recreated figure with new data on 7/30/26, so input the file "data/samp_new_scaled_covar_2026.RDS" that Rishav uploaded to GitHub:
+samp = readRDS("data/samp_new_scaled_covar_2026.RDS")
 
 # traits = 1: "sla",
 # 2: "postvern_stem_diam",
