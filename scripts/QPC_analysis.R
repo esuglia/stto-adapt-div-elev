@@ -199,7 +199,7 @@ library(viridis)
 library(cowplot)
 
 ## Paths ----
-out_dir  <- "outputs"
+out_dir  <- "data"
 figs_dir <- "figs"
 dir.create(figs_dir, showWarnings = FALSE)
 
@@ -551,6 +551,8 @@ plot_trait_pc_scatter <- function(trait_values, eigenvectors, eigenvalues,
 # ---------------------------------------------------------------------------
 # traits_data : named list mapping trait names (matching qpc_results_list keys)
 #               to numeric vectors of trait values
+traits_data = 1:6
+names(traits_data) = names(qpc_results)
 
 traits_data = 1:6
 names(traits_data) = names(qpc_results)
