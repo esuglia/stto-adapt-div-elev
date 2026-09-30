@@ -223,7 +223,10 @@ plot_data <- data.frame(
   neut_lower = -neutral_CI[,2],  # symmetric around 0
   neut_upper = neutral_CI[,2]
 )
-plot_data$pop_labels = factor(plot_data$pop_labels, levels = population_labels)
+#plot_data$pop_labels = factor(plot_data$pop_labels, levels = population_labels)
+
+# plot by elevation instead of alphabetically
+plot_data$pop_labels = factor(plot_data$pop_labels, levels = c("TM2", "IH", "BH", "WV", "KC2", "DPR", "SHA", "WL1", "SQ1", "WL2", "WL3", "YO1", "CP2", "LV3", "SQ3", "LV2", "LV1", "LVTR", "YO11", "YO10"))
 
 # Plot
 ggplot(plot_data, aes(y=observed, x=pop_labels)) +
@@ -242,9 +245,27 @@ ggplot(plot_data, aes(y=observed, x=pop_labels)) +
        title=paste(trait_names[trait_index], " - Selection evidence")) +
   theme_bw(base_size = 20) +
   theme(axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1)) +
-  theme(text=element_text(size=12))
+  theme(text=element_text(size=22))
+
 ggsave(paste0("figures/Trait_means_", trait_names[trait_index],".png"), width = 8, height = 8)
 }
 
-plot_trait_univariate(6)
+plot_trait_univariate(1)
 # Populations outside the gray ribbon show evidence of selection
+
+# use cowplot to create grid of all plots
+library(cowplot)
+library(magick)
+
+p1 <- ggdraw() + draw_image("figures/Trait_means_Longest leaf.png")
+p2 <- ggdraw() + draw_image("figures/Trait_means_Height.png")
+p3 <- ggdraw() + draw_image("figures/Trait_means_Stem Diameter.png")
+p4 <- ggdraw() + draw_image("figures/Trait_means_Leaf Thickness.png")
+p5 <- ggdraw() + draw_image("figures/Trait_means_SLA.png")
+p6 <- ggdraw() + draw_image("figures/Trait_means_No. of Leaves.png")
+
+plot_grid(p1, p2, p3, p4, p5, p6,
+          ncol = 2, 
+          labels = c("A", "B", "C", "D", "E", "F"))
+
+ggsave("figures/Trait_means_combined.png", width = 16, height = 24)
