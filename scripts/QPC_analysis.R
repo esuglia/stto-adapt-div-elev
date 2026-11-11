@@ -394,7 +394,6 @@ plot_qpc_faceted <- function(qpc_results_list, fdr_threshold = 0.05) {
 # ---------------------------------------------------------------------------
 
 plot_qpc_heatmap <- function(qpc_results_list) {
-
   plot_data <- map_dfr(names(qpc_results_list), function(trait) {
     pvals <- qpc_results_list[[trait]]$pvals
     tibble(
@@ -415,7 +414,7 @@ plot_qpc_heatmap <- function(qpc_results_list) {
 
   ggplot(plot_data, aes(x = PC, y = trait, fill = log10p)) +
     geom_tile(color = "white", linewidth = 0.5) +
-    geom_text(aes(label = sig_level), color = "white", fontface = "bold", size = 5) +
+    geom_text(aes(label = paste0(sig_level, "\n", round(pval, 2))), color = "grey80", fontface = "bold", size = 5) +
     scale_fill_viridis_c(
       option = "plasma",
       name   = expression(-log[10](italic(P))),
