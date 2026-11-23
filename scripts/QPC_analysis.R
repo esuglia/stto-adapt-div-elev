@@ -11,7 +11,7 @@
 #
 # USAGE:
 #
-# OUTPUTS (might vary in the repo, set it accordinly):
+# OUTPUTS (might vary in the repo, set it accordingly):
 #   outputs/myK_allpops.rds          - kinship matrix (all individuals)
 #   outputs/myEig_allpops.rds        - eigen decomposition (all individuals)
 #   outputs/myK_sla.rds              - kinship matrix (SLA subset)
